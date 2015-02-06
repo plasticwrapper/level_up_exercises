@@ -1,4 +1,5 @@
-require 'csv'
+require "csv"
+require_relative "lib/dinodex_presenter"
 
 class DinoDex
   DINO_FILENAME1 = "dinodex.csv"
@@ -50,16 +51,22 @@ class DinoDex
   end
 
   def filter_by_weight_greater_than_or_equal_to(weight)
-    duplicate_csv_table(@dino_data).delete_if do |row|
-      row_weight = row["WEIGHT_IN_LBS"].to_i
-      (row_weight <= weight.to_i) || (row_weight == 0)
-    end
+    filter_by_weight(weight, operator: "greater_equal")
   end
 
   def filter_by_weight_less_than(weight)
+    filter_by_weight(weight, operator: "less_than")
+  end
+
+  def filter_by_weight(weight, operator: "less_than")
     duplicate_csv_table(@dino_data).delete_if do |row|
       row_weight = row["WEIGHT_IN_LBS"].to_i
-      (row_weight > weight.to_i) || (row_weight == 0)
+      if operator == "less_than"
+        comparison = (row_weight > weight.to_i)
+      else
+        comparison = (row_weight <= weight.to_i)
+      end
+      comparison || (row_weight == 0)
     end
   end
 
@@ -98,86 +105,6 @@ class DinoDex
   def convert_carnivore(carnivore_bool)
     return "Carnivore" if carnivore_bool == "Yes"
     "Herbivore"
-  end
-end
-
-class DinoDexPresenter
-  attr_accessor :dinodex
-
-  def initialize
-    @dinodex = DinoDex.new
-  end
-
-  def display_all_bipeds
-    display_header "All Bipeds"
-    display_names dinodex.grab_all_bipeds
-  end
-
-  def display_all_carnivores
-    display_header "All Carnivores"
-    display_names dinodex.grab_all_carnivores
-  end
-
-  def display_all_jurassics
-    display_header "All Jurassics"
-    display_names dinodex.grab_all_jurassics
-  end
-
-  def display_all_big_dinos
-    display_header "All Big Dino's"
-    display_names dinodex.grab_all_big_dinos
-  end
-
-  def display_all_small_dinos
-    display_header "All Small Dino's"
-    display_names dinodex.grab_all_small_dinos
-  end
-
-  def display_all_facts_about(dino_name)
-    display_header "All About #{dino_name}"
-    display_dino dinodex.grab_dino_by_name(dino_name)
-  end
-
-  def display_dino(csv_table)
-    csv_table.each do |row|
-      row.each do |header, field|
-        if field
-          display header + ": " + field
-        end
-      end
-      display_line_break
-    end
-  end
-
-  def display_dinos(dino_list)
-    display_header "List of Dino's!"
-    display_dino dino_list
-  end
-
-  private
-
-  def display(message)
-    puts message
-  end
-
-  def display_header(message)
-    display_line_break
-    display message
-    display_line_break
-  end
-
-  def display_column(csv_table, column)
-    csv_table.each do |row|
-      display row[column]
-    end
-  end
-
-  def display_names(csv_table)
-    display_column(csv_table, "NAME")
-  end
-
-  def display_line_break
-    display "--------------------------------------"
   end
 end
 
