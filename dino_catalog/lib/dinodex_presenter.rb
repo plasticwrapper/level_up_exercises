@@ -1,3 +1,5 @@
+require_relative "dinodex"
+
 class DinoDexPresenter
   attr_accessor :dinodex
 
