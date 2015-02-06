@@ -51,15 +51,15 @@ class DinoDex
 
   def filter_by_weight_greater_than_or_equal_to(weight)
     duplicate_csv_table(@dino_data).delete_if do |row|
-      (row["WEIGHT_IN_LBS"].to_i <= weight.to_i) ||
-        (row["WEIGHT_IN_LBS"].to_i == 0)
+      row_weight = row["WEIGHT_IN_LBS"].to_i
+      (row_weight <= weight.to_i) || (row_weight == 0)
     end
   end
 
   def filter_by_weight_less_than(weight)
     duplicate_csv_table(@dino_data).delete_if do |row|
-      (row["WEIGHT_IN_LBS"].to_i > weight.to_i) ||
-        (row["WEIGHT_IN_LBS"].to_i == 0)
+      row_weight = row["WEIGHT_IN_LBS"].to_i
+      (row_weight > weight.to_i) || (row_weight == 0)
     end
   end
 
