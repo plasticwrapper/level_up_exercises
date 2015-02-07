@@ -1,3 +1,4 @@
+require_relative "dinodex_parser"
 require "csv"
 
 class DinoDex
@@ -11,10 +12,8 @@ class DinoDex
   end
 
   def parse_dino_files
-    dino_data1 = CSV.read(DINO_FILENAME1, headers: true)
-    dino_data2 = CSV.read(DINO_FILENAME2, headers: true)
-
-    prune_period_values(merge_data(dino_data1, dino_data2))
+    parser = DinoDexParser.new([DINO_FILENAME1, DINO_FILENAME2])
+    parser.data
   end
 
   def grab_all_bipeds
@@ -73,36 +72,5 @@ class DinoDex
     duplicate_csv_table(@dino_data).delete_if do |row|
       row[column] != filter
     end
-  end
-
-  # This data transformation is brittle, be careful.
-  def merge_data(csv_table1, csv_table2)
-    csv_table2.each do |row|
-      csv_table1 << [
-        row["Genus"],                         # NAME
-        row["Period"],                        # PERIOD
-        "Africa",                             # CONTINENT
-        convert_carnivore(row["Carnivore"]),  # DIET
-        row["Weight"],                        # WEIGHT_IN_LBS
-        row["Walking"],                       # WALKING
-        nil                                   # DESCRIPTION
-      ]
-    end
-
-    csv_table1
-  end
-
-  def prune_period_values(csv_table)
-    csv_table.each do |row|
-      row["PERIOD"].gsub!("Late ", "")
-      row["PERIOD"].gsub!("Early ", "")
-    end
-
-    csv_table
-  end
-
-  def convert_carnivore(carnivore_bool)
-    return "Carnivore" if carnivore_bool == "Yes"
-    "Herbivore"
   end
 end
