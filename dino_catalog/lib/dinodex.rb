@@ -2,17 +2,15 @@ require_relative "dinodex_parser"
 require "csv"
 
 class DinoDex
-  DINO_FILENAME1 = "dinodex.csv"
-  DINO_FILENAME2 = "african_dinosaur_export.csv"
+  attr_accessor :dino_data, :filenames
 
-  attr_accessor :dino_data
-
-  def initialize
+  def initialize(filenames)
+    @filenames = filenames
     @dino_data = parse_dino_files
   end
 
   def parse_dino_files
-    parser = DinoDexParser.new([DINO_FILENAME1, DINO_FILENAME2])
+    parser = DinoDexParser.new(@filenames)
     parser.data
   end
 

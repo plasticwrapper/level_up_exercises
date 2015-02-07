@@ -3,8 +3,8 @@ require_relative "dinodex"
 class DinoDexPresenter
   attr_accessor :dinodex
 
-  def initialize
-    @dinodex = DinoDex.new
+  def initialize(filenames)
+    @dinodex = DinoDex.new(filenames)
   end
 
   def display_all_bipeds

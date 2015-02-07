@@ -1,7 +1,7 @@
 require_relative "lib/dinodex_presenter"
 
 # 1. parse both csv files
-dino = DinoDexPresenter.new
+dino = DinoDexPresenter.new(["dinodex.csv", "african_dinosaur_export.csv"])
 
 # 2. answer these questions
 ## display all dinosaurs that were bipeds
